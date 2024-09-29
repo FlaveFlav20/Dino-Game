@@ -107,6 +107,11 @@ static bool remove_Elem(struct Elements *elements, struct Element *to_remove)
     return false;
 }
 
+/*
+    shift_Elem: It's moving all BIRDS/BUSHES and they will be remove when we don't need them anymore
+        - return: DINO state
+*/
+
 enum STATE shift_Elem(struct Elements *elements)
 {
     if (!elements)
@@ -156,6 +161,8 @@ enum STATE next_frame_Elems(struct Elements *elements, ssize_t chance)
     else if (state == DEAD)
         return DEAD;
 
+    // Choose a random entity
+
     struct timespec ts;
 
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
@@ -163,6 +170,8 @@ enum STATE next_frame_Elems(struct Elements *elements, ssize_t chance)
 
     srand(ts.tv_sec * 1000 + ts.tv_nsec);
     ssize_t r = ((ssize_t)rand()) % chance;
+
+    // Add this new entity
 
     if (r > 1)
         return ALIVE;
@@ -172,8 +181,12 @@ enum STATE next_frame_Elems(struct Elements *elements, ssize_t chance)
         return ALIVE;
     }
 
+    // Only birds cqn be here
+
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
         return ERROR;
+
+    // To choose the bird height
 
     srand(ts.tv_sec * 1000 + ts.tv_nsec);
     ssize_t y = ((ssize_t)rand()) % 3;
@@ -210,28 +223,53 @@ bool move_dino(struct Elements *elements, bool jump, bool shift)
     
     if (elements->dino->y == elements->display->ground_height + 1 && jump)
     {
+        /*
+            DINO on ground
+            DINO->is_jumping = true/false
+            INPUT = {jumping = true, shift = true/false}
+        */
         elements->dino->y++;
         elements->dino->is_jumping = true;
         elements->dino->shift = false;
     }
     else if (elements->dino->y == elements->display->ground_height + 1 && shift)
     {
+        /*
+            DINO on ground
+            DINO->is_jumping = true/false
+            INPUT = {jumping = false, shift = true}
+        */
         elements->dino->is_jumping = false;
         elements->dino->shift = true;
     }
     else if (elements->dino->y == (elements->dino->height_jump + elements->display->ground_height + 1))
     {
+        /*
+            DINO not on ground and DINO->y == DINO->jump_height
+            DINO->is_jumping = true/false
+            INPUT = {jumping = true/false, shift = true/false}
+        */
         elements->dino->is_jumping = false;
         elements->dino->y--;
     }
     else if ((elements->dino->y != elements->display->ground_height + 1) 
             && elements->dino->y > elements->display->ground_height && elements->dino->is_jumping)
     {
+        /*
+            DINO not on ground
+            DINO->is_jumping = true
+            INPUT = {jumping = true/false, shift = true/false}
+        */
         elements->dino->y++;
     }
     else if ((elements->dino->y != elements->display->ground_height + 1) 
             && elements->dino->y > elements->display->ground_height && !elements->dino->is_jumping)
     {
+        /*
+            DINO not on ground
+            DINO->is_jumping = true
+            INPUT = {jumping = true/false, shift = true/false}
+        */
         elements->dino->y--;
     }
     else 

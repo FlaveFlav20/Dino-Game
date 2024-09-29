@@ -9,6 +9,17 @@
 
 struct Elements;
 
+/*
+            rows
+         <--------->
+        |           |   ^
+        |           |   |   cols
+        |           |   v
+        #############   ^
+        #############   |   ground_height
+        #############   v
+*/
+
 struct Display
 {
     ssize_t rows;

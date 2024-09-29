@@ -4,7 +4,7 @@
 enum ENTITIES
 {
     BUSH = 0,
-    FLY = 1,
+    BIRS = 1,
     DINO = 2,
     NONE = 3
 };

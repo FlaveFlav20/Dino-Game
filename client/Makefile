@@ -1,25 +1,36 @@
 ##
-#D Dino
+# Dino-Game
 #
 # @file
 # @version 0.1
 
-SRCS = $(wildcard src/*.c)
-OBJS = $(SRCS:.c=.o)
+CC := gcc
+CFLAGS := -Wall -Werror -Wpedantic -std=c99
+LDFLAGS :=
 
-CFLAGS = -Wall -Werror -Wpedantic -std=c99 -g
+SRCS := $(wildcard src/*.c)
+OBJS := $(SRCS:.c=.o)
 
-MAIN_SRC = main.c
-MAIN_OBJ = main.o
+MAIN_SRC := main.c
+MAIN_OBJ := $(MAIN_SRC:.c=.o)
 
-TARGET = dinoClient
+TARGET := dinoClient
 
 all: $(TARGET)
-	$(CC) $(OBJS) $(MAIN_OBJ)  -o $(TARGET) $(CFLAGS)
 
 $(TARGET): $(OBJS) $(MAIN_OBJ)
+	$(CC) $(OBJS) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS) $(CFLAGS)
+
+lib: CFLAGS += -fPIC
+lib: $(TARGET).so
+
+$(TARGET).so: $(OBJS) $(MAIN_OBJ)
+	$(CC) -shared $(OBJS) $(MAIN_OBJ) -o $(TARGET).so $(CFLAGS)
+
+debug: CFLAGS += -g
+debug: $(TARGET)
 
 clean:
-	rm $(OBJS) $(MAIN_OBJ) $(TARGET)
+	rm $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
 
 # end
