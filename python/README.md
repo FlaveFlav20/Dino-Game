@@ -1,6 +1,6 @@
-## Dino
+# Dino
 
-# Class
+## Class
 
 ```py
 class Dino:
@@ -13,7 +13,7 @@ class Dino:
         ...
 ```
 
-# Explaination
+## Explaination
 
 - **file_in**: a stream/file to get input (like sys.stdin)
 - **file_out**: a stream/file to display result (like sys.stdout)
@@ -25,7 +25,7 @@ class Dino:
 - **display_cols**: the height of the result
 - **display_ground_height**: the height of the ground
 
-# Example
+## Example
 
 ```py
 import sys
@@ -38,3 +38,12 @@ dino = dino.Dino(file_in=sys.stdin, file_out=sys.stdout, time_between_frames=5 *
 # Start
 dino.start()
 ```
+
+## Structures
+
+- **create.sh**: To create the python lib
+- **clean.sh**: To remove all trash files
+- **dino**: the module
+    - **dino/__init__.py**
+    - **dino/dino.py**: our module
+- **setup.py**: It allows to create the library with pip
