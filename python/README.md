@@ -1,5 +1,12 @@
 # Dino
 
+## Table of Contents
+
+- [Class](#Class)
+- [Explaination](#Explaination)
+- [Example](#Example)
+- [Structures](#Structures)
+
 ## Class
 
 ```py

@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
--[Intro](#Intro)
--[How to create libs?](#How-to-create-libs)
--[Structure](#Structure)
+- [Intro](#Intro)
+- [How to create libs?](#How-to-create-libs)
+- [Structure](#Structure)
 
 ## Intro
 
