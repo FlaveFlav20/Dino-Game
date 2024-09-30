@@ -30,6 +30,6 @@ test: $(TARGET)
 	$(CC) $(OBJS) $(MAIN_OBJ)  -o $(TARGET) $(CFLAGS)
 
 clean:
-	rm $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
+	rm -f $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
 
 # end

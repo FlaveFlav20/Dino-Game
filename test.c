@@ -6,8 +6,8 @@ int main()
     struct Setup setup = {
         .server_in = server_in,
         .server_out = stdout,
-        .in = stdin,
-        .time_between_frame_ns = 5 * 100000000L,
+        .in_ = stdin,
+        .time_between_frame_ns = 5,
         .chance = 100,
         .min_chance = 10,
         .dino_jump_height = 5,

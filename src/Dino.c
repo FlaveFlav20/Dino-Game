@@ -50,6 +50,7 @@ void disable_raw_mode_(FILE *file)
 
 bool start_dino(struct Setup *setup)
 {
+    printf("Hello!");
     if (!setup)
         return false;
 
@@ -79,9 +80,9 @@ bool start_dino(struct Setup *setup)
         struct Server server =
         {
             .display = &display,
-            .in = setup->in,
+            .in = setup->in_,
             .out = setup->server_out,
-            .time_between_frame_ns = setup->time_between_frame_ns,
+            .time_between_frame_ns = setup->time_between_frame_ns * 100000000L,
             .chance = setup->chance,
             .min_chance = setup->min_chance,
             .jump_height = setup->dino_jump_height
@@ -99,12 +100,12 @@ bool start_dino(struct Setup *setup)
     {
         close(fd[0]);
 
-        enable_raw_mode_(setup->in);
+        enable_raw_mode_(setup->in_);
         
         while (1)
         {
             char buffer[] = " ";
-            ssize_t size = fread(buffer, sizeof(char), 1, setup->in);
+            ssize_t size = fread(buffer, sizeof(char), 1, setup->in_);
             if (size && buffer[0] == 'q')
             {
                 kill(p, SIGTERM);
@@ -117,7 +118,7 @@ bool start_dino(struct Setup *setup)
             }
             
         }
-        disable_raw_mode_(setup->in);
+        disable_raw_mode_(setup->in_);
         exit(EXIT_SUCCESS);
 
     }

@@ -17,13 +17,15 @@ MAIN_OBJ = test.o
 TARGET = dino
 
 lib: CFLAGS += -fPIC
-lib: $(TARGET).so
+lib: lib$(TARGET).so
 
 $(TARGET): $(OBJS) $(MAIN_OBJ) $(OBJS_s)
 
-$(TARGET).so: $(OBJS)
 $(TARGET).so: $(OBJS) $(OBJS_s)
 	$(CC) -shared $(OBJS) $(OBJS_s) -o $(TARGET).so $(CFLAGS)
+
+lib$(TARGET).so: $(OBJS) $(OBJS_s)
+	$(CC) -shared $(OBJS) $(OBJS_s) -o lib$(TARGET).so $(CFLAGS) && cp lib$(TARGET).so /usr/lib
 
 debug: CFLAGS += -g
 debug: $(TARGET)
@@ -34,6 +36,6 @@ test: $(TARGET) $(OBJS_s)
 	$(CC) $(OBJS) $(MAIN_OBJ) $(OBJS_s)  -o $(TARGET) $(CFLAGS)
 
 clean:
-	rm $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
+	rm -f $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
 
 # end
