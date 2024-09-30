@@ -7,7 +7,7 @@
     array_char: It will use the enum (BUSH=0, BIRD=1, DINO=2...) to displaye the right character
 */  
 
-char *array_char = "%v@E";
+char *array_char = "%v$E";
 
 static void draw_one_line(struct Display *display, FILE *stream)
 {

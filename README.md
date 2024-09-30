@@ -11,5 +11,4 @@ This is a dino game coded in C. It's working via a server which deals with all e
 
 ## Structure
 
-- **Server**
-- **client**
+- **Dino-game**
