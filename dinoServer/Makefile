@@ -1,5 +1,5 @@
 ##
-#D Dino
+#D Dino Server
 #
 # @file
 # @version 0.1
