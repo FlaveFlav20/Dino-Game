@@ -17,12 +17,11 @@ int main(int argc, char **argv)
         .display = &display,
         .in = stdin,
         .out = stdout,
-        .time_between_frame_ns = 5 * 100000000000L,
+        .time_between_frame_ns = 5 * 100000000L,
         .chance = 4,
         .min_chance = 4,
         .jump_height = 4
     };
-
 
     init_server(&server);
 

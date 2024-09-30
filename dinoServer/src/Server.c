@@ -7,16 +7,16 @@
 #include <fcntl.h>
 #include <time.h>
 #include <termio.h>
+#include <errno.h>
 
-#include<signal.h> 
+#include <signal.h>
 
 bool run = true;
 
-void handle_sigterm(int sig) 
-{ 
+void handle_sigterm(int sig) {
+    printf("Stop\n");
     run = false;
-    printf("Heuuuuuuu SIGTEEEEEERM\n");
-} 
+}
 
 static void enable_raw_mode(FILE *file)
 {
@@ -53,12 +53,20 @@ bool init_server(struct Server *server)
     if (!server)
         return false;
 
-    signal(SIGTERM, handle_sigterm); 
+    struct sigaction action;
+    action.sa_handler = handle_sigterm;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;  // No flags
+
+    // Set the handler for SIGTERM
+    if (sigaction(SIGTERM, &action, NULL) < 0) {
+        perror("sigaction");
+        return 1;
+    }
+
     struct Elements *elements = init_Elems(server->display, server->jump_height);
 
     enable_raw_mode(server->in);
-
-    char buffer[] = "          ";
 
     struct timespec req;
     req.tv_sec = 0;
@@ -69,13 +77,19 @@ bool init_server(struct Server *server)
     do 
     {
         ssize_t counter = 0;
-        while (nanosleep(&req, NULL) == -1 && counter < 100)
+        int err = 0;
+        while ((err = nanosleep(&req, NULL)) == -1 && counter < 100)
         {
             counter++;
-            printf("Hahahahah %ld\n", req.tv_nsec);
+            if (errno == EINTR) {
+                printf("nanosleep interrupted: %ld seconds left\n", req.tv_sec);
+            } else {
+                perror("nanosleep failed");
+            }
         }
         screen_display(server->display, server->out, elements);
 
+        char buffer[11] = { '\0' };
         ssize_t size = fread(buffer, sizeof(char), 10, server->in);
 
         struct Input input = parse_input(buffer, size);

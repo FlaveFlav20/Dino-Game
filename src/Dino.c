@@ -2,37 +2,74 @@
 
 #include "../dinoServer/src/Includes/Server.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <time.h>
+#include <termio.h>
 #include <errno.h>
-#include <signal.h>
-#include <bits/waitflags.h>
+
+#include <sys/types.h>
 #include <sys/wait.h>
-#include <asm-generic/signal-defs.h>
+#include <stdlib.h>
+
+#include <string.h>
+
+#include <signal.h>
+
+pid_t parent_pid = 0;
+
+static void enable_raw_mode_(FILE *file)
+{
+
+    int fd = fileno(file);
+    struct termios tty;
+
+    tcgetattr(fd, &tty);
+
+    tty.c_lflag &= ~(ICANON | ECHO);
+
+    tty.c_cc[VMIN] = 1;
+
+    tty.c_cc[VTIME] = 0;
+
+    tcsetattr(fd, TCSANOW, &tty);
+
+    fcntl(fd, F_SETFL, O_NONBLOCK);
+}
+
+void disable_raw_mode_(FILE *file)
+{
+    int fd = fileno(file);
+    struct termios tty;
+
+    tcgetattr(fd, &tty);
+
+    tty.c_lflag |= (ICANON | ECHO);
+    tcsetattr(fd, TCSANOW, &tty);
+}
 
 bool start_dino(struct Setup *setup)
 {
     if (!setup)
         return false;
 
-    pid_t cpid = 0;
-    pid_t w = 0;
-    int status;
+    int fd[2] = {-1, -1};
+    if (pipe(fd) == -1) {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
     pid_t p; 
     p = fork(); 
-    if(p<0) 
-    { 
-      perror("fork fail"); 
-      exit(1); 
-    } 
-  
-    // parent process because return value non-zero. 
-    else if ( p == 0) 
-    {
 
-        waitpid(cpid, &status, WUNTRACED);
+
+    if(p < 0) 
+    { 
+        perror("fork fail"); 
+        exit(1); 
+    }
+    
+    else if (p == 0)
+    {
         struct Display  display = {
             .rows = setup->display_rows,
             .cols = setup->display_cols,
@@ -42,7 +79,7 @@ bool start_dino(struct Setup *setup)
         struct Server server =
         {
             .display = &display,
-            .in = setup->server_in,
+            .in = setup->in,
             .out = setup->server_out,
             .time_between_frame_ns = setup->time_between_frame_ns,
             .chance = setup->chance,
@@ -50,45 +87,39 @@ bool start_dino(struct Setup *setup)
             .jump_height = setup->dino_jump_height
         };
 
-        struct sigaction sa;
-    sa.sa_handler = SIG_IGN; // Set handler to ignore signal
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(EXIT_FAILURE);
-    }
+        close(fd[1]);
+        dup2(fd[0], STDIN_FILENO);
+        close(fd[0]);
 
         init_server(&server);
-
+    
+        exit(EXIT_SUCCESS);
     }
     else
     {
-        printf("Heuuuueedsfezfze\n");
-        w = waitpid(cpid, &status, WUNTRACED);
-        printf("Heuuuueedsfezfze\n");
-        if (w == -1) {
-            perror("waitpid");
-            exit(EXIT_FAILURE);
-        }
-        int pid = getpid();
-        char buffer[] = " ";
-        ssize_t size = 0;
+        close(fd[0]);
+
+        enable_raw_mode_(setup->in);
         
         while (1)
         {
-            size = fread(buffer, sizeof(char), 1, setup->in);
+            char buffer[] = " ";
+            ssize_t size = fread(buffer, sizeof(char), 1, setup->in);
             if (size && buffer[0] == 'q')
             {
-                kill(pid, SIGTERM);
+                kill(p, SIGTERM);
+                waitpid(p, 0, 0);
                 break;
             }
-            fwrite(buffer, sizeof(char), 1, setup->server_in);
+            if (size > 0)
+            {
+                write(fd[1], buffer, 1);
+            }
+            
         }
-        printf("Ha mé\n");
+        disable_raw_mode_(setup->in);
         exit(EXIT_SUCCESS);
 
     }
-
     return true;
 }

@@ -15,6 +15,7 @@ struct Elements *init_Elems(struct Display *display, ssize_t jump)
 
     res->display = display;
     res->element = NULL;
+    res->number_entities = 0;
 
     struct Dino *dino = malloc(sizeof(struct Dino));
     if (!dino)
@@ -78,6 +79,7 @@ static bool append_Elem(struct Elements *elements, ssize_t x, ssize_t y, enum EN
 
         e->next = new_element;
     }
+    elements->number_entities++;
     return true;
 }
 
@@ -90,6 +92,7 @@ static bool remove_Elem(struct Elements *elements, struct Element *to_remove)
     {
         elements->element = elements->element->next;
         free(to_remove);
+        elements->number_entities--;
         return true;
     }
 
@@ -167,6 +170,13 @@ enum STATE next_frame_Elems(struct Elements *elements, ssize_t chance)
 
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
         return ERROR;
+
+    printf("%ld %ld\n", elements->number_entities, (int)elements->display->rows / elements->display->cols);
+
+    if (elements->number_entities >= (elements->display->rows / elements->display->cols))
+        return ALIVE;
+
+    printf("Heu");
 
     srand(ts.tv_sec * 1000 + ts.tv_nsec);
     ssize_t r = ((ssize_t)rand()) % chance;

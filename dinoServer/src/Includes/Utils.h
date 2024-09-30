@@ -53,6 +53,7 @@ struct Elements
     struct Display *display;
     struct Element *element;
     struct Dino *dino;
+    ssize_t number_entities;
 };
 
 /*
