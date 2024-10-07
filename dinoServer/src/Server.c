@@ -87,7 +87,7 @@ bool init_server(struct Server *server)
                 perror("nanosleep failed");
             }
         }
-        screen_display(server->display, server->out, elements);
+        screen_display_(server->display, server->out, elements);
 
         char buffer[11] = { '\0' };
         ssize_t size = fread(buffer, sizeof(char), 10, server->in);

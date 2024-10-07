@@ -7,9 +7,8 @@
 
 struct Setup
 {
-    FILE* server_in;
-    FILE* server_out;
-    FILE *in_;
+    int server_out;
+    int in_;
     ssize_t time_between_frame_ns;
     ssize_t chance;
     ssize_t min_chance;

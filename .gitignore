@@ -19,3 +19,4 @@ build
 dino_game.egg-info
 __pycache__
 env
+.vscode

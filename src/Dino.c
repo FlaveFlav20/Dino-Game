@@ -50,7 +50,6 @@ void disable_raw_mode_(FILE *file)
 
 bool start_dino(struct Setup *setup)
 {
-    printf("Hello!");
     if (!setup)
         return false;
 
@@ -62,6 +61,8 @@ bool start_dino(struct Setup *setup)
     pid_t p; 
     p = fork(); 
 
+    FILE *file_server_out = fdopen(setup->server_out, "w");
+    FILE *file_in_ = fdopen(setup->in_, "r");
 
     if(p < 0) 
     { 
@@ -80,18 +81,21 @@ bool start_dino(struct Setup *setup)
         struct Server server =
         {
             .display = &display,
-            .in = setup->in_,
-            .out = setup->server_out,
+            .in = file_in_,
+            .out = file_server_out,
             .time_between_frame_ns = setup->time_between_frame_ns * 100000000L,
             .chance = setup->chance,
             .min_chance = setup->min_chance,
             .jump_height = setup->dino_jump_height
         };
 
+        printf("Server out: %p\n", (void *)server.out);
+
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
 
+        printf("Init\n");
         init_server(&server);
     
         exit(EXIT_SUCCESS);
@@ -100,12 +104,12 @@ bool start_dino(struct Setup *setup)
     {
         close(fd[0]);
 
-        enable_raw_mode_(setup->in_);
+        enable_raw_mode_(file_in_);
         
         while (1)
         {
             char buffer[] = " ";
-            ssize_t size = fread(buffer, sizeof(char), 1, setup->in_);
+            ssize_t size = fread(buffer, sizeof(char), 1, file_in_);
             if (size && buffer[0] == 'q')
             {
                 kill(p, SIGTERM);
@@ -118,7 +122,7 @@ bool start_dino(struct Setup *setup)
             }
             
         }
-        disable_raw_mode_(setup->in_);
+        disable_raw_mode_(file_in_);
         exit(EXIT_SUCCESS);
 
     }

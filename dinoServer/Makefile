@@ -14,6 +14,7 @@ MAIN_OBJ = test.o
 
 TARGET = dinoServer
 
+
 lib: CFLAGS += -fPIC
 lib: $(TARGET).so
 

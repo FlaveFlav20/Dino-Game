@@ -27,6 +27,6 @@ struct Display
     ssize_t ground_height;
 };
 
-bool screen_display(struct Display *display, FILE *stream, struct Elements *elements);
+bool screen_display_(struct Display *display, FILE *stream, struct Elements *elements);
 
 #endif // DISPLAY_H
