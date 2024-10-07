@@ -8,17 +8,13 @@ import io
 import dino
 import fcntl
 
+from pygame_dino import Square, Player, Bird, Bush, Manage_enemy, display
+
 import pygame
 from pygame.locals import *
 
-class Square(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Square, self).__init__()
-        self.surf = pygame.Surface((100, 100))
-         
-        # Define the color of the surface using RGB color coding.
-        self.surf.fill((0, 200, 255))
-        self.rect = self.surf.get_rect()
+row: int = 50
+col: int = 8
 
 def unblock(fd: int):
     flag = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -41,12 +37,11 @@ if pid > 0:
     file_out = os.fdopen(r_game_out, "r")
 
     pygame.init()
-    screen = pygame.display.set_mode((500, 80))
+    screen = pygame.display.set_mode((row * 10, col * 10))
 
-    square1 = Square()
-    square2 = Square()
-    square3 = Square()
-    square4 = Square()
+    player = Player()
+
+    manage_enemy: Manage_enemy = Manage_enemy()
 
     onGame = True
     file_in = os.fdopen(w_game_in, "w")
@@ -59,10 +54,8 @@ if pid > 0:
                     onGame = False
                     file_in.write("q")
                 elif event.key == K_UP:
-                    print("Up")
                     file_in.write(" ")
                 elif event.key == K_DOWN:
-                    print("Down")
                     file_in.write("c")
             elif event.type == QUIT:
                 input_data = io.StringIO("q")
@@ -71,20 +64,15 @@ if pid > 0:
         
         file_in.flush()
 
+        screen.fill((0, 0, 0))
+        manage_enemy.clear()
+
         try:
             buffer = []
-            for i in range(8):
+            for i in range(col):
                 out = file_out.readline()
                 buffer.append(out)
-            for j in range(8):
-                print(buffer[j], end='')
-                for i in range(50):
-                    if buffer[j][i] == "$":
-                        screen.blit(square1.surf, (j * 100, i * 10))
-                    elif buffer[j][i] == "v":
-                        screen.blit(square2.surf, (j * 100, i * 10))
-                    elif buffer[j][i] == "%":
-                        screen.blit(square3.surf, (j * 100, i * 10))
+            display(buffer, row, col, screen, manage_enemy, player)
             sys.stdout.flush()
         except:
             continue
@@ -100,7 +88,7 @@ if pid > 0:
 else:
     os.close(r_game_out)
     os.close(w_game_in)
-    dino = dino.Dino(fd_in=r_game_in, fd_out=w_game_out, time_between_frames=5, chance=100, min_chance=10, dino_jump_height=4, display_rows=50, display_cols=8, display_ground_height=2)
+    dino = dino.Dino(fd_in=r_game_in, fd_out=w_game_out, time_between_frames=5, chance=50, min_chance=10, dino_jump_height=4, display_rows=row, display_cols=col, display_ground_height=2)
     print("Close B")
     dino.start()
     os.close(w_game_out)
