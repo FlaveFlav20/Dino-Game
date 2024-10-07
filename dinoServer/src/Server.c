@@ -18,7 +18,7 @@ void handle_sigterm(int sig) {
     run = false;
 }
 
-static void enable_raw_mode(FILE *file)
+/*static void enable_raw_mode(FILE *file)
 {
 
     int fd = fileno(file);
@@ -46,7 +46,7 @@ void disable_raw_mode(FILE *file)
 
     tty.c_lflag |= (ICANON | ECHO);
     tcsetattr(fd, TCSANOW, &tty);
-}
+}*/
 
 bool init_server(struct Server *server)
 {
@@ -66,7 +66,7 @@ bool init_server(struct Server *server)
 
     struct Elements *elements = init_Elems(server->display, server->jump_height);
 
-    enable_raw_mode(server->in);
+    //enable_raw_mode(server->in);
 
     struct timespec req;
     req.tv_sec = 0;
@@ -89,8 +89,13 @@ bool init_server(struct Server *server)
         }
         screen_display_(server->display, server->out, elements);
 
+        printf("Server read:%p\n", (void *)server->in);
+
         char buffer[11] = { '\0' };
         ssize_t size = fread(buffer, sizeof(char), 10, server->in);
+
+        printf("Server buffer:%s;",buffer);
+        printf("run: %d", run);
 
         struct Input input = parse_input(buffer, size);
 
@@ -103,7 +108,9 @@ bool init_server(struct Server *server)
             clear = 0;
     } while (next_frame_Elems(elements, chance) == ALIVE && run);
 
-    disable_raw_mode(server->in);
+    //disable_raw_mode(server->in);
+
+    printf("Close server");
 
     free_Elems(elements);
     return true;
@@ -123,7 +130,10 @@ struct Input parse_input(char *buffer, ssize_t buffer_size)
     for (ssize_t i = 0; i < buffer_size; i++)
     {
         if (buffer[i] == ' ')
+        {
+            printf("Yes jump!\n");
             input.jump = true;
+        }
         else if (buffer[i] == 'c')
             input.shift = true;
     }
