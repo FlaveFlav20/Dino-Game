@@ -14,7 +14,6 @@
 bool run = true;
 
 void handle_sigterm(int sig) {
-    printf("Stop\n");
     run = false;
 }
 

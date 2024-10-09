@@ -1,4 +1,4 @@
-#include "src/Includes/Dino.h"
+#include "../src/Includes/Dino.h"
 
 int main()
 {

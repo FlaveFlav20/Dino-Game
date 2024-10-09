@@ -54,6 +54,8 @@ class Manage_enemy():
         self.bushes = []
 
 def display(buffer, row: int, col: int, screen, manage_enemy: Manage_enemy, player: Player):
+    screen.fill((0, 0, 0))
+    manage_enemy.clear()
     for j in range(col):
         for i in range(row):
             if buffer[j][i] == '$':
