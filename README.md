@@ -11,7 +11,7 @@
 
 ## Intro
 
-This is a dino game coded in C. It's working via a server which deals with all events, and a client which send inputs, and receive a screen.
+This is a dino game coded in C. It's working via a server which deals with all events, and a client which sends inputs, and receive a screen.
 
 ## How-to-create-libs
 
@@ -23,7 +23,7 @@ make lib
 
 - Python lib
 
-You should use a python environement with
+You should use a python environment with
 
 ```sh
 python3 -m venv env
@@ -35,7 +35,7 @@ Then, you can use it with
 source env/bin/activate
 ```
 
-Then, you can creta python lib (you must know your sudo password)
+Then, you can create python lib (you must know your sudo password)
 
 ```sh
 sh create_python_lib.sh
@@ -44,7 +44,7 @@ sh create_python_lib.sh
 Then, you can use the lib (see **python/README.md**)
 
 ## Why-should-we-use-sudo-to-create-the-lib
-We must put the library **.so** into **/usr/lib** to avoid hardcoded path
+We must put the library **.so** into **/usr/lib** to avoid hard coded path
 
 If you can't or won't use sudo, you should modify the path in **python/dino/__init__.py** from this line
 ```py
