@@ -4,7 +4,7 @@
 # @file
 # @version 0.1
 
-SRCS = $(wildcard dinoServer/src/*.c)
+SRCS = $(wildcard dinoBackend/src/*.c)
 OBJS = $(SRCS:.c=.o)
 
 OBJS += src/Dino.o

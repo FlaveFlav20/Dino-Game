@@ -40,13 +40,25 @@ sh create_python_lib.sh
 
 Then, you can use the lib (see **python/README.md**)
 
+## Why should we use sudo to create the lib?
+We must put the library **.so** into **/usr/lib** to avoid hardcoded path
+
+If you can't or won't use sudo, you should modify the path in **python/dino/__init__.py** from this line
+```py
+blackboxLib = ctypes.CDLL("/usr/lib/libdino.so")
+```
+to 
+```py
+blackboxLib = ctypes.CDLL("your_absolute_path_to_libdino/libdino.so")
+```
+
 ## Structure
 
-- **Dino-game**: The server. See **Dino-game/README.md**
+- **DinoBackend**: The backend. See **DinoBackend/README.md**
 - **python**: It allows to create the python library. See **python/README.md**
 - **src**: Sources files
     - **src/Includes**: All headers
-    - **src/Includes/Dino.h**
+    - **src/Includes/Dino.h**: 
     - **src/Dino.c**
 - **Makefile**: make lib/ make test
 - **README.md**: This file :D

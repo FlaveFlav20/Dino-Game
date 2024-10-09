@@ -3,6 +3,7 @@ import typing
 
 blackboxLib = ctypes.CDLL("/usr/lib/libdino.so")
 
+# To create the setup structure (available in src/Includes/Dino.h)
 class SetupDino(ctypes.Structure):
     _fields_ = [("server_out", ctypes.c_int),
                 ("in_", ctypes.c_int),
@@ -18,9 +19,11 @@ blackboxLib.start_dino.argtypes = [ctypes.POINTER(SetupDino)]
 blackboxLib.start_dino.restype = ctypes.c_bool
 
 class Dino:
-    def __init__(self, fd_in: int, fd_out: int, time_between_frames: int,
-                chance: int, min_chance: int, dino_jump_height: int,
-                display_rows: int, display_cols: int, display_ground_height: int):
+    def __init__(self, fd_in: int, fd_out: int, 
+                time_between_frames: int,
+                chance: int, min_chance: int, 
+                dino_jump_height: int,
+                display_rows: int, display_cols: int, display_ground_height: int) -> None:
 
 
         self.setup = SetupDino(server_out=fd_out,

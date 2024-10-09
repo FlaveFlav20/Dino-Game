@@ -1,6 +1,6 @@
 #include "Includes/Dino.h"
 
-#include "../dinoServer/src/Includes/Server.h"
+#include "../dinoBackend/src/Includes/Server.h"
 
 #include <unistd.h>
 #include <fcntl.h>

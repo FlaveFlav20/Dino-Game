@@ -2,9 +2,7 @@
 
 int main()
 {
-    FILE *server_in = fopen("server_in", "rw");
     struct Setup setup = {
-        .server_in = server_in,
         .server_out = stdout,
         .in_ = stdin,
         .time_between_frame_ns = 5,
@@ -17,5 +15,4 @@ int main()
     };
 
     start_dino(&setup);
-    fclose(server_in);
 }
