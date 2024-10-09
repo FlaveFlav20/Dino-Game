@@ -57,16 +57,12 @@ blackboxLib = ctypes.CDLL("your_absolute_path_to_libdino/libdino.so")
 
 ## Structure
 
-- **DinoBackend**: The backend. See **DinoBackend/README.md**
+- **dino**: Our game. See **dino/README.md**
 - **python**: It allows to create the python library. See **python/README.md**
-- **src**: Sources files
-    - **src/Includes**: All headers
-    - **src/Includes/Dino.h**: 
-    - **src/Dino.c**
 - **Makefile**: make lib/ make test
 - **README.md**: This file :D
-- **test.c**: Test with C code
-- **test.py**: Test with python code
+- **test/test.c**: Test with C code
+- **test/test.py**: Test with python code
 
 ## Example-of-1-output-frame
 

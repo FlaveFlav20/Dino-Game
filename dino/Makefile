@@ -11,8 +11,8 @@ OBJS += src/Dino.o
 
 CFLAGS = -Wall -Werror -Wpedantic -std=c99 -g -D_POSIX_C_SOURCE=199309L -fPIC
 
-MAIN_SRC = test/test.c
-MAIN_OBJ = test/test.o
+MAIN_SRC = ../test/test.c
+MAIN_OBJ = ../test/test.o
 
 TARGET = dino
 
@@ -36,6 +36,6 @@ test: $(TARGET) $(OBJS_s)
 	$(CC) $(OBJS) $(MAIN_OBJ) $(OBJS_s)  -o $(TARGET) $(CFLAGS)
 
 clean:
-	rm -f $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so
+	rm -f $(OBJS) $(MAIN_OBJ) $(TARGET) $(TARGET).so lib$(TARGET).so 2> /dev/null
 
 # end

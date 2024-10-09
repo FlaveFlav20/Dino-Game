@@ -1,10 +1,10 @@
-#include "../src/Includes/Dino.h"
+#include "../dino/src/Includes/Dino.h"
 
 int main()
 {
     struct Setup setup = {
-        .server_out = stdout,
-        .in_ = stdin,
+        .server_out = STDOUT_FILENO,
+        .in_ = STDIN_FILENO,
         .time_between_frame_ns = 5,
         .chance = 100,
         .min_chance = 10,
