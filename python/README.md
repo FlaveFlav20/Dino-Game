@@ -24,7 +24,6 @@ class Dino:
 
 ## Explaination
 
-/*
 - **in_**: a stream/file to get input (like sys.stdin)
 - **file_out**: a stream/file to display result (like sys.stdout)
 - **time_between_frames**: the time between 2 frame in 5 * 100 ms
@@ -34,7 +33,6 @@ class Dino:
 - **display_rows**: the length of the result
 - **display_cols**: the height of the result
 - **display_ground_height**: the height of the ground
-*/
 
 ## Example
 

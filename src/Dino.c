@@ -1,6 +1,6 @@
 #include "Includes/Dino.h"
 
-#include "../dinoBackend/src/Includes/Server.h"
+#include "../dinoBackend/src/Includes/Backend.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -111,7 +111,7 @@ bool start_dino(struct Setup *setup)
             .ground_height = setup->display_ground_height
         };
 
-        struct Server server =
+        struct Backend backend =
         {
             .display = &display,
             .in = pipe_,
@@ -125,7 +125,7 @@ bool start_dino(struct Setup *setup)
 
         close(fd[1]);
         
-        init_server(&server);
+        init_backend(&backend);
         disable_raw_mode_(pipe_);
     
         exit(EXIT_SUCCESS);

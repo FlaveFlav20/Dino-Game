@@ -46,6 +46,7 @@ if pid > 0:
     file_out = os.fdopen(r_game_out, "r")
 
     pygame.init()
+    pygame.display.set_caption('Dino')
     screen = pygame.display.set_mode((row * 10, col * 10))
 
     player = Player()
@@ -104,8 +105,6 @@ if pid > 0:
 
         # To display elements on screen
         pygame.display.flip()
-        if onGame == False:
-            print("On game: ", onGame)
     os.close(r_game_out)
     os.close(w_game_in)
     os.waitpid(pid, 0)

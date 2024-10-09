@@ -11,8 +11,8 @@ OBJS += src/Dino.o
 
 CFLAGS = -Wall -Werror -Wpedantic -std=c99 -g -D_POSIX_C_SOURCE=199309L -fPIC
 
-MAIN_SRC = test.c
-MAIN_OBJ = test.o
+MAIN_SRC = test/test.c
+MAIN_OBJ = test/test.o
 
 TARGET = dino
 

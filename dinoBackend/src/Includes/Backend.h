@@ -8,7 +8,7 @@
 #include <sys/types.h>
 
 /*
-    struct Server:
+    struct Backend:
         - display: see Display.h
         - FILE * :
             - in: to get input (like stdin)
@@ -19,7 +19,7 @@
         - jump_height: this is for the dino
 */
 
-struct Server
+struct Backend
 {
     struct Display *display;
     FILE* in;
@@ -45,7 +45,7 @@ struct Input
         - return value: false if error, true else
 */
 
-bool init_server(struct Server *server);
+bool init_backend(struct Backend *backend);
 
 /*
     parse_input: To know whare are the input of the buffer. It will take the last input from the buffer for jump and shift

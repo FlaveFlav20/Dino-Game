@@ -1,4 +1,4 @@
-#include "Includes/Server.h"
+#include "Includes/Backend.h"
 
 #include "Includes/Display.h"
 #include "Includes/Utils.h"
@@ -47,9 +47,9 @@ void disable_raw_mode(FILE *file)
     tcsetattr(fd, TCSANOW, &tty);
 }*/
 
-bool init_server(struct Server *server)
+bool init_backend(struct Backend *backend)
 {
-    if (!server)
+    if (!backend)
         return false;
 
     struct sigaction action;
@@ -63,15 +63,15 @@ bool init_server(struct Server *server)
         return 1;
     }
 
-    struct Elements *elements = init_Elems(server->display, server->jump_height);
+    struct Elements *elements = init_Elems(backend->display, backend->jump_height);
 
-    //enable_raw_mode(server->in);
+    //enable_raw_mode(backend->in);
 
     struct timespec req;
     req.tv_sec = 0;
-    req.tv_nsec = server->time_between_frame_ns;
+    req.tv_nsec = backend->time_between_frame_ns;
 
-    ssize_t chance = server->chance;
+    ssize_t chance = backend->chance;
 
     do 
     {
@@ -81,35 +81,28 @@ bool init_server(struct Server *server)
         {
             counter++;
             if (errno == EINTR) {
-                printf("nanosleep interrupted: %ld seconds left\n", req.tv_sec);
+                fprintf(stderr, "nanosleep interrupted: %ld seconds left\n", req.tv_sec);
             } else {
                 perror("nanosleep failed");
             }
         }
-        screen_display_(server->display, server->out, elements);
-
-        printf("Server read:%p\n", (void *)server->in);
+        screen_display_(backend->display, backend->out, elements);
 
         char buffer[11] = { '\0' };
-        ssize_t size = fread(buffer, sizeof(char), 10, server->in);
-
-        printf("Server buffer:%s;",buffer);
-        printf("run: %d", run);
+        ssize_t size = fread(buffer, sizeof(char), 10, backend->in);
 
         struct Input input = parse_input(buffer, size);
 
         move_dino(elements, input.jump, input.shift);
-        if (chance > server->min_chance)
+        if (chance > backend->min_chance)
             chance--;
         
         ssize_t clear = 0;
-        while ((clear = fread(buffer, sizeof(char), 10, server->in)) > 0)
+        while ((clear = fread(buffer, sizeof(char), 10, backend->in)) > 0)
             clear = 0;
     } while (next_frame_Elems(elements, chance) == ALIVE && run);
 
-    //disable_raw_mode(server->in);
-
-    printf("Close server");
+    //disable_raw_mode(backend->in);
 
     free_Elems(elements);
     return true;
@@ -130,7 +123,6 @@ struct Input parse_input(char *buffer, ssize_t buffer_size)
     {
         if (buffer[i] == ' ')
         {
-            printf("Yes jump!\n");
             input.jump = true;
         }
         else if (buffer[i] == 'c')
